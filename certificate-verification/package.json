@@ -1,0 +1,17 @@
+{
+  "name": "certificate-verification",
+  "private": true,
+  "scripts": {
+    "chain": "cd blockchain && npx hardhat node",
+    "deploy": "wait-on tcp:8545 && cd blockchain && npx hardhat run scripts/deploy.js --network localhost",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+
+    "all": "concurrently -n CHAIN,DEPLOY,BACKEND,FRONTEND \"npm run chain\" \"npm run deploy\" \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "tailwindcss": "^3.4.19",
+    "wait-on": "^9.0.10"
+  }
+}
