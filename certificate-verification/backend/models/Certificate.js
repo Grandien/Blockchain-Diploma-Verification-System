@@ -15,7 +15,7 @@ const certificateSchema = new mongoose.Schema(
     dataHash: { type: String, required: true },
     // Status
     isValid: { type: Boolean, default: true },
-    // QR Code (base64 string)
+    // QR Code (base64 string)  
     qrCode: { type: String },
   },
   { timestamps: true }

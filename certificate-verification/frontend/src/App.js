@@ -4,8 +4,8 @@ import AdminLogin from "./pages/AdminLogin";
 import MahasiswaLogin from "./pages/MahasiswaLogin";
 import IssuePage from "./pages/IssuePage";
 import VerifyPage from "./pages/VerifyPage";
-import SertifikatSaya from "./features/mahasiswa/pages/SertifikatSaya";
-
+import MyCertificate from  "./features/mahasiswa/pages/MyCertificate";
+import LandingPage from "./pages/LandingPage";
 function App() {
   return (
     <Routes>
@@ -14,7 +14,8 @@ function App() {
       <Route path="/admin/dashboard" element={<Dashboard />} />
       <Route path="/admin/issue" element={<IssuePage />} />
       <Route path="/verify" element={<VerifyPage />} />
-      <Route path="/mahasiswa/sertifikat" element={<SertifikatSaya />} />
+      <Route path="/mahasiswa/sertifikat" element={<MyCertificate />} />
+      <Route path="/" element={<LandingPage />} />
     </Routes>
   );
 }

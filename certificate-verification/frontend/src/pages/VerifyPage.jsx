@@ -1,26 +1,58 @@
 // src/pages/verify/VerifyPage.jsx
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
+import { useSearchParams } from "react-router-dom"
 
 const VerifyPage = () => {
+  const [searchParams] = useSearchParams()
+  const idFromUrl = searchParams.get("id") || ""
+  const isFromQR = !!idFromUrl
 
-  // State untuk semua input
-  const [certId, setCertId]     = useState("")
-  const [pdfFile, setPdfFile]   = useState(null)
-  const [nama, setNama]         = useState("")
-  const [nim, setNim]           = useState("")
-  const [institusi, setInstitusi] = useState("")
-  const [prodi, setProdi]       = useState("")
-  const [tanggal, setTanggal]   = useState("")
-  const [jenis, setJenis]       = useState("")
+  const [certId, setCertId]         = useState(idFromUrl)
+  const [pdfFile, setPdfFile]       = useState(null)
+  const [nama, setNama]             = useState("")
+  const [nim, setNim]               = useState("")
+  const [institusi, setInstitusi]   = useState("")
+  const [prodi, setProdi]           = useState("")
+  const [tanggal, setTanggal]       = useState("")
+  const [jenis, setJenis]           = useState("")
+  const [result, setResult]         = useState(null)
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState("")
+  const [fetchingData, setFetchingData] = useState(false)
 
-  // State untuk hasil & loading
-  const [result, setResult]     = useState(null)
-  const [loading, setLoading]   = useState(false)
-  const [error, setError]       = useState("")
+  // ⭐ Auto-fetch data sertifikat saat ada certId dari QR
+  useEffect(() => {
+    if (!idFromUrl) return
 
-  // Fungsi submit
+    const fetchCertData = async () => {
+      try {
+        setFetchingData(true)
+        const { data } = await axios.get(
+          `http://localhost:5000/api/verify/quick/${idFromUrl}`
+        )
+
+        if (data.success && data.data) {
+          const cert = data.data
+          // Auto-fill semua field!
+          setNama(cert.nama || "")
+          setNim(cert.nim || "")
+          setInstitusi(cert.institusi || "")
+          setProdi(cert.programStudi || "")
+          setTanggal(cert.tanggalLulus || "")
+          setJenis(cert.jenisSertifikat || "")
+        }
+      } catch (err) {
+        setError("Gagal mengambil data sertifikat")
+      } finally {
+        setFetchingData(false)
+      }
+    }
+
+    fetchCertData()
+  }, [idFromUrl])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -28,7 +60,6 @@ const VerifyPage = () => {
     setResult(null)
 
     try {
-      // Pakai FormData karena ada file PDF
       const formData = new FormData()
       formData.append("pdf", pdfFile)
       formData.append("certId", certId)
@@ -43,9 +74,7 @@ const VerifyPage = () => {
         "http://localhost:5000/api/verify",
         formData
       )
-
       setResult(data)
-
     } catch (err) {
       setError(err.response?.data?.message || "Terjadi kesalahan")
     } finally {
@@ -53,34 +82,57 @@ const VerifyPage = () => {
     }
   }
 
+  // Field readonly kalau dari QR
+  const readonlyStyle = {
+    ...styles.input,
+    backgroundColor: "#f1f5f9",
+    cursor: "not-allowed",
+    color: "#64748b"
+  }
+
   return (
     <div style={styles.page}>
       <div style={styles.container}>
 
-        {/* HEADER */}
         <h1 style={styles.title}>🎓 Verifikasi Ijazah</h1>
         <p style={styles.subtitle}>
           Masukkan data ijazah untuk memverifikasi keasliannya
         </p>
 
-        {/* FORM */}
+        {/* Loading fetch data */}
+        {fetchingData && (
+          <div style={styles.infoBox}>
+            ⏳ Mengambil data sertifikat...
+          </div>
+        )}
+
+        {/* Info kalau dari QR */}
+        {isFromQR && !fetchingData && (
+          <div style={styles.successInfoBox}>
+            ✅ Data sertifikat berhasil dimuat dari QR Code.
+            Silahkan upload file PDF ijazah untuk memverifikasi.
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={styles.form}>
 
           {/* Certificate ID */}
           <div style={styles.field}>
             <label style={styles.label}>Certificate ID</label>
             <input
-              style={styles.input}
+              style={isFromQR ? readonlyStyle : styles.input}
               placeholder="CERT-2024-XXXXXX"
               value={certId}
               onChange={e => setCertId(e.target.value)}
-              required
+              readOnly={isFromQR}
             />
           </div>
 
-          {/* Upload PDF */}
+          {/* Upload PDF — ini satu-satunya yang HRD isi */}
           <div style={styles.field}>
-            <label style={styles.label}>Upload File PDF Ijazah</label>
+            <label style={styles.label}>
+              Upload File PDF Ijazah
+            </label>
             <input
               style={styles.input}
               type="file"
@@ -95,15 +147,16 @@ const VerifyPage = () => {
             )}
           </div>
 
-          {/* Data Mahasiswa */}
+          {/* Data Sertifikat — readonly kalau dari QR */}
           <div style={styles.grid}>
             <div style={styles.field}>
               <label style={styles.label}>Nama Lengkap</label>
               <input
-                style={styles.input}
+                style={isFromQR ? readonlyStyle : styles.input}
                 placeholder="Budi Santoso"
                 value={nama}
                 onChange={e => setNama(e.target.value)}
+                readOnly={isFromQR}
                 required
               />
             </div>
@@ -111,10 +164,11 @@ const VerifyPage = () => {
             <div style={styles.field}>
               <label style={styles.label}>NIM</label>
               <input
-                style={styles.input}
+                style={isFromQR ? readonlyStyle : styles.input}
                 placeholder="2021001"
                 value={nim}
                 onChange={e => setNim(e.target.value)}
+                readOnly={isFromQR}
                 required
               />
             </div>
@@ -122,10 +176,11 @@ const VerifyPage = () => {
             <div style={styles.field}>
               <label style={styles.label}>Institusi</label>
               <input
-                style={styles.input}
+                style={isFromQR ? readonlyStyle : styles.input}
                 placeholder="Universitas ABC"
                 value={institusi}
                 onChange={e => setInstitusi(e.target.value)}
+                readOnly={isFromQR}
                 required
               />
             </div>
@@ -133,10 +188,11 @@ const VerifyPage = () => {
             <div style={styles.field}>
               <label style={styles.label}>Program Studi</label>
               <input
-                style={styles.input}
+                style={isFromQR ? readonlyStyle : styles.input}
                 placeholder="Teknik Informatika"
                 value={prodi}
                 onChange={e => setProdi(e.target.value)}
+                readOnly={isFromQR}
                 required
               />
             </div>
@@ -144,49 +200,58 @@ const VerifyPage = () => {
             <div style={styles.field}>
               <label style={styles.label}>Tanggal Lulus</label>
               <input
-                style={styles.input}
-                type="date"
+
+                style={isFromQR ? readonlyStyle : styles.input}
+                type={isFromQR ? "text" : "date"}
                 value={tanggal}
                 onChange={e => setTanggal(e.target.value)}
+                readOnly={isFromQR}
                 required
               />
             </div>
 
             <div style={styles.field}>
               <label style={styles.label}>Jenis Sertifikat</label>
-              <select
-                style={styles.input}
-                value={jenis}
-                onChange={e => setJenis(e.target.value)}
-                required
-              >
-                <option value="">Pilih jenis...</option>
-                <option value="Ijazah">Ijazah</option>
-                <option value="Sertifikat">Sertifikat</option>
-                <option value="Transkrip">Transkrip</option>
-              </select>
+              {isFromQR ? (
+                <input
+                  style={readonlyStyle}
+                  value={jenis}
+                  readOnly
+                />
+              ) : (
+                <select
+                  style={styles.input}
+                  value={jenis}
+                  onChange={e => setJenis(e.target.value)}
+                  required
+                >
+                  <option value="">Pilih jenis...</option>
+                  <option value="Ijazah">Ijazah</option>
+                  <option value="Sertifikat">Sertifikat</option>
+                  <option value="Transkrip">Transkrip</option>
+                </select>
+              )}
             </div>
           </div>
 
-          {/* Error */}
           {error && (
-            <div style={styles.errorBox}>
-              ⚠️ {error}
-            </div>
+            <div style={styles.errorBox}>⚠️ {error}</div>
           )}
 
-          {/* Submit */}
           <button
             type="submit"
-            style={styles.button}
-            disabled={loading}
+            style={{
+              ...styles.button,
+              opacity: loading || fetchingData ? 0.7 : 1,
+              cursor: loading || fetchingData ? "not-allowed" : "pointer"
+            }}
+            disabled={loading || fetchingData}
           >
             {loading ? "⏳ Memverifikasi..." : "🔍 Verifikasi Sekarang"}
           </button>
 
         </form>
 
-        {/* HASIL VERIFIKASI */}
         {result && <ResultCard result={result} />}
 
       </div>
@@ -356,6 +421,24 @@ const styles = {
     textAlign: "center",
     color: "#64748b",
     marginBottom: "2rem",
+  },
+  infoBox: {
+    backgroundColor: "#eff6ff",
+    border: "1px solid #93c5fd",
+    color: "#1e40af",
+    padding: "0.75rem 1rem",
+    borderRadius: "8px",
+    marginBottom: "1rem",
+    textAlign: "center",
+  },
+  successInfoBox: {
+    backgroundColor: "#f0fdf4",
+    border: "1px solid #86efac",
+    color: "#166534",
+    padding: "0.75rem 1rem",
+    borderRadius: "8px",
+    marginBottom: "1rem",
+    textAlign: "center",
   },
   form: {
     backgroundColor: "white",

@@ -12,7 +12,7 @@
  */
 const Sidebar = ({
   logo,
-  navItems,
+  navItems = [],
   activeId,
   user,
   onLogout,

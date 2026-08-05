@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification System — Figma Wireframes</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding: 24px; }
+    header { max-width: 1440px; margin: 0 auto 24px auto; display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 20px 32px; border-radius: 12px; border: 1px solid #334155; }
+    h1 { font-size: 22px; font-weight: 700; }
+    p.subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .figma-tip { background: rgba(99, 102, 241, 0.15); border: 1px solid var(--accent); padding: 12px 18px; border-radius: 8px; font-size: 13px; color: #c7d2fe; }
+    
+    .nav-tabs { max-width: 1440px; margin: 0 auto 20px auto; display: flex; gap: 12px; }
+    .tab-btn { background: var(--card-bg); color: var(--text-muted); border: 1px solid #334155; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+    .tab-btn:hover { color: var(--text-main); background: #2d3748; }
+    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .viewer-container { max-width: 1440px; margin: 0 auto; background: #000; border-radius: 12px; border: 1px solid #334155; overflow: hidden; padding: 16px; text-align: center; }
+    .wireframe-frame { width: 100%; max-width: 1440px; height: auto; border: none; border-radius: 8px; background: #fafafb; }
+
+    .action-bar { max-width: 1440px; margin: 16px auto 0 auto; display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 16px 24px; border-radius: 10px; border: 1px solid #334155; }
+    .btn { background: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary { background: #334155; color: white; }
+    .btn-secondary:hover { background: #475569; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🎓 Certificate Verification App — Wireframe Suite</h1>
+      <p class="subtitle">Designed for Dual Hash Blockchain Architecture (Ethereum / Hardhat + Node.js + React)</p>
+    </div>
+    <div class="figma-tip">
+      💡 <strong>How to import to Figma:</strong> Drag &amp; drop any <code>.svg</code> file directly onto your Figma canvas!
+    </div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showWireframe('01_Landing_Page_Wireframe.svg', this)">1. Landing Page</button>
+    <button class="tab-btn" onclick="showWireframe('02_Public_Verify_Page_Wireframe.svg', this)">2. Public Verify Page</button>
+    <button class="tab-btn" onclick="showWireframe('03_Admin_Issue_Page_Wireframe.svg', this)">3. Admin Issue Panel</button>
+    <button class="tab-btn" onclick="showWireframe('04_Student_Portal_Wireframe.svg', this)">4. Student Portal</button>
+  </div>
+
+  <div class="viewer-container">
+    <img id="wireframe-img" class="wireframe-frame" src="01_Landing_Page_Wireframe.svg" alt="Wireframe Preview" />
+  </div>
+
+  <div class="action-bar">
+    <span id="current-file-text" style="font-size: 14px; color: var(--text-muted)">File: 01_Landing_Page_Wireframe.svg (1440 x 900 px)</span>
+    <div style="display: flex; gap: 10px;">
+      <a id="download-link" href="01_Landing_Page_Wireframe.svg" download class="btn">⬇️ Download SVG for Figma</a>
+      <button onclick="openInNewTab()" class="btn btn-secondary">🔍 Open Raw SVG</button>
+    </div>
+  </div>
+
+  <script>
+    function showWireframe(filename, btn) {
+      document.getElementById('wireframe-img').src = filename;
+      document.getElementById('download-link').href = filename;
+      document.getElementById('current-file-text').innerText = 'File: ' + filename + ' (1440 x 900 px)';
+      
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function openInNewTab() {
+      const src = document.getElementById('wireframe-img').src;
+      window.open(src, '_blank');
+    }
+  </script>
+</body>
+</html>
