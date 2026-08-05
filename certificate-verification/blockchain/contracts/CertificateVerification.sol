@@ -43,7 +43,7 @@ contract CertificateVerification {
             certificates[certId].timestamp == 0,
             "Sertifikat dengan ID ini sudah terdaftar"
         );
-        require(fileHash != bytes32(0), "File hash tidak boleh kosong"); # img.pdf -> 
+        require(fileHash != bytes32(0), "File hash tidak boleh kosong"); // # img.pdf -> 
         require(dataHash != bytes32(0), "Data hash tidak boleh kosong");
 
         certificates[certId] = Certificate({
