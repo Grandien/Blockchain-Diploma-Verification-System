@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { useSearchParams } from "react-router-dom"
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+
 const VerifyPage = () => {
   const [searchParams] = useSearchParams()
   const idFromUrl = searchParams.get("id") || ""
@@ -30,7 +32,7 @@ const VerifyPage = () => {
       try {
         setFetchingData(true)
         const { data } = await axios.get(
-          `http://localhost:5000/api/verify/quick/${idFromUrl}`
+          `${API_URL}/api/verify/quick/${idFromUrl}`
         )
 
         if (data.success && data.data) {
@@ -71,7 +73,7 @@ const VerifyPage = () => {
       formData.append("jenisSertifikat", jenis)
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/verify",
+        `${API_URL}/api/verify`,
         formData
       )
       setResult(data)

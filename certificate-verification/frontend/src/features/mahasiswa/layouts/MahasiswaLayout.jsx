@@ -18,12 +18,6 @@ const MahasiswaLayout = ({ children }) => {
       label: "Sertifikat Saya",
       onClick: () => navigate("/mahasiswa/sertifikat"),
     },
-    {
-      id: "profil",
-      icon: "👤",
-      label: "Profil",
-      onClick: () => navigate("/mahasiswa/profil"),
-    },
   ]
 
   // activeId ditentukan dari path saat ini, bukan state lokal

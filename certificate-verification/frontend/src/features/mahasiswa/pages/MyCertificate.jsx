@@ -3,6 +3,8 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import MahasiswaLayout from "../layouts/MahasiswaLayout"
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+
 const MyCertificate = () => {
   const [certificates, setCertificates] = useState([])
   const [loading, setLoading]           = useState(true)
@@ -17,7 +19,7 @@ const MyCertificate = () => {
       setLoading(true)
       const token = localStorage.getItem("token")
       const { data } = await axios.get(
-        "http://localhost:5000/api/mahasiswa/certificates",
+        `${API_URL}/api/mahasiswa/certificates`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setCertificates(data.data)

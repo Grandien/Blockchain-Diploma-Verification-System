@@ -45,10 +45,6 @@ const LandingPage = () => {
     >
       Verifikasi Sekarang
     </button>
-
-                <button className="rounded-xl border border-slate-300 bg-white px-6 py-3 hover:bg-slate-100 transition">
-                  Pelajari Lebih Lanjut
-                </button>
               </div>
             </div>
 
@@ -96,7 +92,7 @@ const LandingPage = () => {
           <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
 
             <div className="text-center">
-              <h2 className="text-4xl font-bold text-blue-600">1000+</h2>
+              <h2 className="text-4xl font-bold text-blue-600">10+</h2>
               <p className="mt-2 text-slate-500">
                 Sertifikat Diterbitkan
               </p>
@@ -174,7 +170,7 @@ const LandingPage = () => {
               Lakukan verifikasi sertifikat digital dengan cepat dan aman.
             </p>
 
-            <button className="mt-8 rounded-xl bg-white text-blue-600 px-8 py-3 font-semibold hover:bg-slate-100 transition">
+            <button onClick={() => navigate("/verify")} className="mt-8 rounded-xl bg-white text-blue-600 px-8 py-3 font-semibold hover:bg-slate-100 transition">
               Mulai Verifikasi
             </button>
 
